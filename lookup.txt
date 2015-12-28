@@ -1,0 +1,3 @@
+16
+13
+/usr/local/text-maze-2/MAZE/similar.MOD.txt
