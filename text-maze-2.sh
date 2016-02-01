@@ -13,15 +13,15 @@ V-LOOKUP-INT (){
    #yaxis=$(sed '2q;d' lookup.txt)
    #file=$(sed '3q;d' lookup.txt)
    VLOOKline=$(sed ''$VLOOKyaxis'q;d' $MODID)
-   echo "$VLOOKline" | grep -o . > linecache.txt
-   VLOOKOUT=$(sed ''$VLOOKxaxis'q;d' linecache.txt)
+   LINECACHE=$(echo "$VLOOKline" | grep -o .)
+   VLOOKOUT=$(echo "$LINECACHE" | sed ''$VLOOKxaxis'q;d')
    echo "$VLOOKOUT"
 }
 
 
 echo "---------------------------------------------------------"
 echo "|Thomas's Text-maze system                               |"
-echo "|v 2.0                                                   |"
+echo "|v 2.1                                                  |"
 echo "---------------------------------------------------------"
 echo ""
 echo "these mazes were found:"
@@ -78,10 +78,10 @@ until [[ "$end" = "1" || "$entry" = "quit" ]]; do
   VLOOKPOING=$POVlefty
   LEFT=$(V-LOOKUP-INT $POVleftx)
   echo "$name"
-  echo "F: $FORWARD
-  B: $BACK
-  L: $LEFT
-  R: $RIGHT"
+  #echo "F: $FORWARD
+  #B: $BACK
+  #L: $LEFT
+  #R: $RIGHT"
   if [[ "$FORWARD" = "0" && "$LEFT" = "1" && "$RIGHT" = "1" && "$BACK" = "0" ]]; then
     POVVIEW=$WHEREAMI/MAZE0.TIMG
   fi

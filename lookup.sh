@@ -11,6 +11,6 @@ xaxis=$(sed '1q;d' lookup.txt)
 yaxis=$(sed '2q;d' lookup.txt)
 file=$(sed '3q;d' lookup.txt)
 line=$(sed ''$yaxis'q;d' $file)
-echo "$line" | grep -o . > linecache.txt
-OUT=$(sed ''$xaxis'q;d' linecache.txt)
+LINECACHE2=$(echo "$line" | grep -o .)
+OUT=$(echo "$LINECACHE2" | sed ''$xaxis'q;d')
 echo "$OUT"
