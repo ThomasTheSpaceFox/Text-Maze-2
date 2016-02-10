@@ -5,7 +5,6 @@ cd $WHEREAMI
 V-LOOKUP-INT (){
    VLOOKxaxis=$1
    VLOOKyaxis=$VLOOKPOING
-   #echo "VLOOK x: $VLOOKxaxis y: $VLOOKyaxis"
    #xaxis=2
    #yaxis=5
    #file=sample.MOD.txt
@@ -18,10 +17,12 @@ V-LOOKUP-INT (){
    echo "$VLOOKOUT"
 }
 
+source $WHEREAMI/text-maze.conf
+  
 
 echo "---------------------------------------------------------"
 echo "|Thomas's Text-maze system                               |"
-echo "|v 2.1                                                  |"
+echo "|v 2.2                                                   |"
 echo "---------------------------------------------------------"
 echo ""
 echo "these mazes were found:"
@@ -59,15 +60,17 @@ Playy=$starty
 Playx=$startx
 echo "$START
 $name"
-until [[ "$end" = "1" || "$entry" = "quit" ]]; do
+until [[ "$end" = "1" || "$entry" = "$QUITKEY" ]]; do
   POVVIEW=$WHEREAMI/NULL.TIMG
   POVforwardx="$Playx"
-  POVforwardy=$(echo "$Playy+1" | bc)
+  #POVforwardy=$(echo "$Playy+1" | bc)
+  POVforwardy=$(($Playy+1))
   POVbackx="$Playx"
-  POVbacky=$(echo "$Playy-1" | bc)
-  POVleftx=$(echo "$Playx+1" | bc)
+  #CNT1=$(($line+1))
+  POVbacky=$(($Playy-1))
+  POVleftx=$(($Playx+1))
   POVlefty=$Playy
-  POVrightx=$(echo "$Playx-1" | bc)
+  POVrightx=$(($Playx-1))
   POVrighty=$Playy
   VLOOKPOING=$POVforwardy
   FORWARD=$(V-LOOKUP-INT $POVforwardx)
@@ -78,10 +81,12 @@ until [[ "$end" = "1" || "$entry" = "quit" ]]; do
   VLOOKPOING=$POVlefty
   LEFT=$(V-LOOKUP-INT $POVleftx)
   echo "$name"
-  #echo "F: $FORWARD
-  #B: $BACK
-  #L: $LEFT
-  #R: $RIGHT"
+  if [ "$DEBUG" = "1" ]; then
+    echo "F: $FORWARD
+B: $BACK
+L: $LEFT
+R: $RIGHT"
+  fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "1" && "$RIGHT" = "1" && "$BACK" = "0" ]]; then
     POVVIEW=$WHEREAMI/MAZE0.TIMG
   fi
@@ -129,77 +134,91 @@ until [[ "$end" = "1" || "$entry" = "quit" ]]; do
   fi
   $TIMG $POVVIEW
   entry=nullvalue
-  until [[ "$entry" = "forward" || "$entry" = "back" ||  "$entry" = "left" || "$entry" = "right" || "$entry" = "quit" ]]; do
-    echo "valid options: forward, back, left, right, quit"
-    read entry
+  until [[ "$entry" = "$UKEY" || "$entry" = "$DKEY" ||  "$entry" = "$LKEY" || "$entry" = "$RKEY" || "$entry" = "$QUITKEY" ]]; do
+    echo "valid options: forward(${UKEY}), back(${DKEY}), left(${LKEY}), right(${RKEY}), quit(${QUITKEY})"
+    read -n 1 entry
   done
   tput clear
-  if [ "$entry" = "back" ]; then
-    if [ "$(echo "($Playy-1)<1" | bc)" = "1" ]; then
+  if [ "$entry" = "$DKEY" ]; then
+    if [ "0" = "1" ]; then
       echo "$CANTMOVE"
     else
-      BIND1=$(echo "$Playy-1" | bc)
-      echo "$Playx" > lookup.txt
-      echo "$BIND1" >> lookup.txt
-      echo "$MODID" >> lookup.txt
-      bidle=$($LOOKUP)
-      #echo $bidle
-      if [ "$($LOOKUP "$Playx\$BIND1\WHEREAMI/$MODID")" = "1" ]; then
+      #BIND1=$(echo "$Playy-1" | bc)
+      BIND1=$(($Playy-1))
+      VLOOKPOING=$BIND1
+      #echo "$Playx" > lookup.txt
+      #echo "$BIND1" >> lookup.txt
+      #echo "$MODID" >> lookup.txt
+      #bidle=$($LOOKUP)
+      #if [ "$DEBUG" = "1" ]; then
+      #  echo $bidle
+      #fi
+      #if [ "$($LOOKUP "$Playx\$BIND1\WHEREAMI/$MODID")" = "1" ]; then
+      if [ "$(V-LOOKUP-INT "$Playx")" = "1" ]; then
         echo "$CANTMOVE"
       else
-        upcnt=$(echo "$Playy-1" | bc)
+        #upcnt=$(echo "$Playy-1" | bc)
+        upcnt=$(($Playy-1))
         Playy=$upcnt
       fi
     fi
   fi
-  if [ "$entry" = "forward" ]; then
-    if [ "$(echo "($Playy+1)>$sizey" | bc)" = "1" ]; then
+  if [ "$entry" = "$UKEY" ]; then
+    if [ "0" = "1" ]; then
       echo "$CANTMOVE"
     else
-      BIND2=$(echo "$Playy+1" | bc)
-      echo "$Playx" > lookup.txt
-      echo "$BIND2" >> lookup.txt
-      echo "$MODID" >> lookup.txt
-      bidle=$($LOOKUP)
-      #echo $bidle
-      if [ "$(${LOOKUP} "$Playx\$BIND2\$MODID")" = "1" ]; then
+      #BIND2=$(echo "$Playy+1" | bc)
+      BIND2=$(($Playy+1))
+      VLOOKPOING=$BIND2
+      #echo "$Playx" > lookup.txt
+      #echo "$BIND2" >> lookup.txt
+      #echo "$MODID" >> lookup.txt
+      #bidle=$($LOOKUP)
+      #if [ "$DEBUG" = "1" ]; then
+      #  echo $bidle
+      #fi
+      #if [ "$(${LOOKUP} "$Playx\$BIND2\$MODID")" = "1" ]; then
+      if [ "$(V-LOOKUP-INT "$Playx")" = "1" ]; then
         echo "$CANTMOVE"
       else
-        downcnt=$(echo "$Playy+1" | bc)
+        downcnt=$(($Playy+1))
         Playy=$downcnt
       fi
     fi
   fi
-  if [ "$entry" = "right" ]; then
-    if [ "$(echo "($Playx-1)<1" | bc)" = "1" ]; then
+  if [ "$entry" = "$RKEY" ]; then
+    if [ "0" = "1" ]; then
       echo "$CANTMOVE"
     else
-      BIND3=$(echo "$Playx-1" | bc)
-      echo "$BIND3" > lookup.txt
-      echo "$Playy" >> lookup.txt
-      echo "$MODID" >> lookup.txt
+      BIND3=$(($Playx-1))
+      VLOOKPOING=$Playy
+      #echo "$BIND3" > lookup.txt
+      #echo "$Playy" >> lookup.txt
+      #echo "$MODID" >> lookup.txt
       #$LOOKUP
-      if [ "$(${LOOKUP} $Playy\$BIND3\$WHEREAMI/$MODID)" = "1" ]; then
+      #if [ "$(${LOOKUP} $Playy\$BIND3\$WHEREAMI/$MODID)" = "1" ]; then
+      if [ "$(V-LOOKUP-INT "$BIND3")" = "1" ]; then
         echo "$CANTMOVE"
       else
-        leftcnt=$(echo "$Playx-1" | bc)
+        leftcnt=$(($Playx-1))
         Playx=$leftcnt
       fi
     fi
   fi
-  if [ "$entry" = "left" ]; then
-    if [ "$(echo "($Playx+1)>$sizex" | bc)" = "1" ]; then
+  if [ "$entry" = "$LKEY" ]; then
+    if [ "0" = "1" ]; then
       echo "$CANTMOVE"
     else
-      BIND4=$(echo "$Playx+1" | bc)
-      echo "$BIND4" > lookup.txt
-      echo "$Playy" >> lookup.txt
-      echo "$MODID" >> lookup.txt
+      BIND4=$(($Playx+1))
+      VLOOKPOING=$Playy
+      #echo "$BIND4" > lookup.txt
+      #echo "$Playy" >> lookup.txt
+      #echo "$MODID" >> lookup.txt
       #$LOOKUP
-      if [ "$(${LOOKUP} $Playy\$BIND3\$WHEREAMI/$MODID)" = "1" ]; then
+      if [ "$(V-LOOKUP-INT "$BIND4")" = "1" ]; then
         echo "$CANTMOVE"
       else
-        rightcnt=$(echo "$Playx+1" | bc)
+        rightcnt=$(($Playx+1))
         Playx=$rightcnt
       fi
     fi
