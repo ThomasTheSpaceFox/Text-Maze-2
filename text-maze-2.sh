@@ -33,17 +33,35 @@ cd $WHEREAMI
 echo "enter name of valid .MAZE file"
 echo "only type .MAZE files found above"
 echo "MAZE files should be in MAZE directory in the script's directory"
-until [ "$FILEREAD" = "1" ]; do
-  read filed
-  file=$WHEREAMI/MAZE/$filed
-  if test -e "$file"; then
-    FILEREAD=1
-  else
-    echo "maze not found"
+#until [ "$FILEREAD" = "1" ]; do
+#  read filed
+#  file=$WHEREAMI/MAZE/$filed
+#  if test -e "$file"; then
+#    FILEREAD=1
+#  else
+#    echo "maze not found"
+#  fi
+#done
+filenumcnt=0
+until [ "$FNAMEVAL" = "1" ]; do
+  ENTRY4=NULL
+  echo "enter filename number found below"
+  for f in $WHEREAMI/MAZE/*.MAZE
+  do
+    CNT1=$(($filenumcnt+1))
+    filenumcnt=$CNT1
+    echo "$filenumcnt | $f"
+    eval $(echo FILELISTITEM${filenumcnt})="${f}"
+  done
+  read ENTRY4
+  eval $(echo filenameselect)=$(echo '$'FILELISTITEM${ENTRY4})
+  file=$filenameselect
+  if test -f "$file"; then
+    FNAMEVAL=1
   fi
 done
 LOOKUP=$WHEREAMI/lookup.sh
-TIMG=$WHEREAMI/T-IMG.sh
+TIMG=source
 CANTMOVE="cannot move in that direction."
 FINISH="congradulations, you won."
 START="Welcome to text-maze."
@@ -61,7 +79,7 @@ Playx=$startx
 echo "$START
 $name"
 until [[ "$end" = "1" || "$entry" = "$QUITKEY" ]]; do
-  POVVIEW=$WHEREAMI/NULL.TIMG
+  POVVIEW=$WHEREAMI/NULL.TC
   POVforwardx="$Playx"
   #POVforwardy=$(echo "$Playy+1" | bc)
   POVforwardy=$(($Playy+1))
@@ -88,49 +106,49 @@ L: $LEFT
 R: $RIGHT"
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "1" && "$RIGHT" = "1" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE0.TIMG
+    POVVIEW=$WHEREAMI/MAZE0.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "1" && "$RIGHT" = "1" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE1.TIMG
+    POVVIEW=$WHEREAMI/MAZE1.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "1" && "$RIGHT" = "0" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE2.TIMG
+    POVVIEW=$WHEREAMI/MAZE2.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "0" && "$RIGHT" = "0" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE3.TIMG
+    POVVIEW=$WHEREAMI/MAZE3.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "0" && "$RIGHT" = "1" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE4.TIMG
+    POVVIEW=$WHEREAMI/MAZE4.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "0" && "$RIGHT" = "1" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE5.TIMG
+    POVVIEW=$WHEREAMI/MAZE5.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "1" && "$RIGHT" = "0" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE6.TIMG
+    POVVIEW=$WHEREAMI/MAZE6.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "0" && "$RIGHT" = "0" && "$BACK" = "0" ]]; then
-    POVVIEW=$WHEREAMI/MAZE7.TIMG
+    POVVIEW=$WHEREAMI/MAZE7.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "0" && "$RIGHT" = "0" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZE8.TIMG
+    POVVIEW=$WHEREAMI/MAZE8.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "0" && "$RIGHT" = "1" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZE9.TIMG
+    POVVIEW=$WHEREAMI/MAZE9.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "1" && "$RIGHT" = "0" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZEA.TIMG
+    POVVIEW=$WHEREAMI/MAZEA.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "0" && "$RIGHT" = "0" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZEB.TIMG
+    POVVIEW=$WHEREAMI/MAZEB.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "1" && "$RIGHT" = "0" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZEC.TIMG
+    POVVIEW=$WHEREAMI/MAZEC.TC
   fi
   if [[ "$FORWARD" = "1" && "$LEFT" = "0" && "$RIGHT" = "1" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZED.TIMG
+    POVVIEW=$WHEREAMI/MAZED.TC
   fi
   if [[ "$FORWARD" = "0" && "$LEFT" = "1" && "$RIGHT" = "1" && "$BACK" = "1" ]]; then
-    POVVIEW=$WHEREAMI/MAZEE.TIMG
+    POVVIEW=$WHEREAMI/MAZEE.TC
   fi
   $TIMG $POVVIEW
   entry=nullvalue
