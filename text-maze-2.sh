@@ -22,7 +22,7 @@ source $WHEREAMI/text-maze.conf
 
 echo "---------------------------------------------------------"
 echo "|Thomas's Text-maze system                               |"
-echo "|v 2.2                                                   |"
+echo "|v 2.4                                                   |"
 echo "---------------------------------------------------------"
 echo ""
 echo "these mazes were found:"
